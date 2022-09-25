@@ -35,7 +35,15 @@ function App() {
           </div>
           <ul className="list-group list-group-flush">
             {list.map((tarea) => (
-              <li className="list-group-item">{tarea}</li>
+              <li className="list-group-item">
+                {tarea}
+                <button
+                  type="button"
+                  className="btn-close float-end"
+                  aria-label="Close"
+                  onClick={()=> setList(list.filter((item) => item !== `${tarea}`))}
+                ></button>
+              </li>
             ))}
           </ul>
           <div class="card-footer">Tareas pendientes: {list.length}</div>
