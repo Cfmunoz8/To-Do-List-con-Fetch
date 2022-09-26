@@ -20,7 +20,7 @@ function App() {
         <h2>¿Qué me falta por hacer?</h2>
       </div>
       <div>
-        <div className="card" style={{ width: "530px" }}>
+        <div className="card border-dark" style={{ width: "530px" }}>
           <form
             onSubmit={(send) => {
               send.preventDefault();
@@ -44,13 +44,14 @@ function App() {
                 Agregar Tarea
               </button>
             </div>
-            <ul className="list-group list-group-flush">
+            <ul className="list-group list-group-flush text-dark">
               {list.map((tarea) => (
                 <li className="list-group-item">
                   {tarea}
                   <button
+                    id="close"
                     type="button"
-                    className="btn-close float-end"
+                    className="btn btn-close float-end"
                     aria-label="Close"
                     onClick={() =>
                       setList(list.filter((item) => item !== `${tarea}`))
