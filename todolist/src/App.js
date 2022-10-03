@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
@@ -9,6 +9,38 @@ function App() {
   }
   function footer2() {
     if (list.length > 0) return `Tareas pendientes: ${list.length}`;
+  }
+  let newList = list.map((task) => {
+    return { label: task, done: false };
+  });
+  useEffect(() => {
+    const URL = "https://assets.breatheco.de/apis/fake/todos/user/cfmunoz8";
+    const configPut = {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    };
+    fetch(URL, configPut)
+      .then((response) => {
+        console.log(response, "response");
+        return response.json();
+      })
+      .then((data) => console.log(data, "data"))
+      .catch((error) => console.log(error, "error"));
+  });
+  function putList() {
+    const URL = "https://assets.breatheco.de/apis/fake/todos/user/cfmunoz8";
+    const configPut = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify([newList]),
+    };
+    fetch(URL, configPut)
+      .then((response) => {
+        console.log(response, "response");
+        return response.json();
+      })
+      .then((data) => console.log(data, "data"))
+      .catch((error) => console.log(error, "error"));
   }
   return (
     <div
@@ -39,6 +71,7 @@ function App() {
                 value="add task"
                 onClick={() => {
                   setList(list.concat(`${task}`));
+                  putList();
                 }}
               >
                 Agregar Tarea
