@@ -5,7 +5,6 @@ function App() {
   const [task, setTask] = useState(""); //variable tarea
   const [list, setList] = useState([]); //variable lista de tareas
 
-  const deleteTask = () => setList(list.filter((item) => item !== `${tarea}`));
 
   //funciones para mostrar tareas pendientes en footer
   function footer() {
@@ -33,25 +32,19 @@ function App() {
         console.log(response, "response");
         return response.json();
       })
-      .then((data) => console.log(data, "data"))
+      .then((data) => {setList(data)
+      console.log(data, "data")})
       .catch((error) => console.log(error, "error"));
   }
 
   //función para ejecutar API metodo PUT (actualizar lista de tareas)
   function putList(task) {
-    let newList = list.concat(task).map((tarea) => {
-      return {
-        label: tarea,
-        done: false,
-      };
-    });
     const URL = "https://assets.breatheco.de/apis/fake/todos/user/cfmunoz8";
     const configPut = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newList),
+      body: JSON.stringify(task),
     };
-    //función para mostrar como un arreglo de objetos la lista de tareas
 
     fetch(URL, configPut)
       .then((response) => {
@@ -60,7 +53,27 @@ function App() {
       })
       .then((data) => console.log(data, "data"))
       .catch((error) => console.log(error, "error"));
+  };
+
+
+  //función para mostrar como un arreglo de objetos la lista de tareas
+  const saveTask = (event) => {
+    event.preventDefault();
+    let newTask = { label: task, done: false }
+    setList(list.concat(newTask))
+    setTask("")
+    // Se aplica el metodo PUT del Fetch para guardar la tarea 
+    let newTasks = list.concat(newTask)
+    putList(newTasks)
   }
+
+  // Borrar actividad
+  const deleteTask = (indice) => {
+    setList(list.filter((task, index) => index !== indice))
+    let deleteSelectTask = list.filter((task, index) => index !== indice)
+    putList(deleteSelectTask)
+  }
+
 
   return (
     <div
@@ -74,11 +87,7 @@ function App() {
       <div>
         <div className="card border-dark" style={{ width: "530px" }}>
           <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              setList(list.concat(`${task}`));
-              putList(task);
-            }}
+            onSubmit={saveTask}
           >
             <div className="card-header row">
               <input
@@ -97,18 +106,16 @@ function App() {
               </button>
             </div>
             <ul className="list-group list-group-flush text-dark">
-              {list.map((tarea) => (
+              {list.map((task, indice) => (
                 <li className="list-group-item">
-                  {tarea}
+                  {task.label}
                   <button
                     id="close"
                     type="button"
                     className="btn btn-close float-end"
                     aria-label="Close"
-                    onClick={() => {
-                      setList(list.filter((item) => item !== `${tarea}`));
-                      putList(); //función para eliminar una tarea de la lista en el DOM
-                    }}
+                    key={task.label}
+                    onClick={() => {deleteTask(indice)}}
                   ></button>
                 </li>
               ))}
